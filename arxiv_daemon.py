@@ -52,14 +52,18 @@ if __name__ == '__main__':
             try:
                 resp = get_response(search_query=q, start_index=k)
                 papers = parse_response(resp)
+                print(len(papers))
                 time.sleep(0.5)
                 if len(papers) == 100:
                     break # otherwise we have to try again
+                if (len(papers) == 0):
+                    logging.info("no new papers found")
+                    break
             except Exception as e:
                 logging.warning(e)
                 logging.warning("will try again in a bit...")
                 ntried += 1
-                if ntried > 1000:
+                if ntried > 5:
                     logging.error("ok we tried 1,000 times, something is srsly wrong. exitting.")
                     sys.exit()
                 time.sleep(2 + random.uniform(0, 4))
@@ -84,7 +88,10 @@ if __name__ == '__main__':
         total_updated += nreplace + nnew
 
         # some diagnostic information on how things are coming along
-        logging.info(papers[0]['_time_str'])
+        if len(papers) > 0:
+            logging.info(papers[0]['_time_str'])
+        else:
+            break
         logging.info("k=%d, out of %d: had %d, replaced %d, new %d. now have: %d" %
              (k, len(papers), nhad, nreplace, nnew, prevn))
 
