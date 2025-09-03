@@ -34,6 +34,13 @@ All of the database will be stored inside the `data` directory. Finally, if you'
 
 (Optional) Finally, if you'd like to send periodic emails to users about new papers, see the `send_emails.py` script. You'll also have to `pip install sendgrid`. I run this script in a daily cron job.
 
+#### To deploy via docker
+
+```bash
+docker build -t arxiv-sanity-lite .
+docker run -d -p 5000:5000 --name arxiv-sanity-lite arxiv-sanity-lite
+```
+
 #### Requirements
 
  Install via requirements:
