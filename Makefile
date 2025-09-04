@@ -6,4 +6,4 @@ up:
 
 # I use this to run the server
 fun:
-	export FLASK_APP=serve.py; flask run
+	python serve.py

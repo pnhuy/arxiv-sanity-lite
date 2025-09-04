@@ -1,5 +1,5 @@
 """
-Flask server backend
+Flask server backend - Modified to serve from subfolder configured via environment variable
 
 ideas:
 - allow delete of tags
@@ -29,6 +29,35 @@ from aslite.db import load_features
 RET_NUM = 25 # number of papers to return per page
 
 app = Flask(__name__)
+
+# Configure the application to work with a subfolder
+class ReverseProxied(object):
+    def __init__(self, app, script_name=None, scheme=None, server=None):
+        self.app = app
+        self.script_name = script_name
+        self.scheme = scheme
+        self.server = server
+
+    def __call__(self, environ, start_response):
+        script_name = environ.get('HTTP_X_SCRIPT_NAME', '') or self.script_name
+        if script_name:
+            environ['SCRIPT_NAME'] = script_name
+            path_info = environ['PATH_INFO']
+            if path_info.startswith(script_name):
+                environ['PATH_INFO'] = path_info[len(script_name):]
+        scheme = environ.get('HTTP_X_SCHEME', '') or self.scheme
+        if scheme:
+            environ['wsgi.url_scheme'] = scheme
+        server = environ.get('HTTP_X_FORWARDED_HOST', '') or self.server
+        if server:
+            environ['HTTP_HOST'] = server
+        return self.app(environ, start_response)
+
+# Read subfolder from environment variable, default to '/arxivsanity' if not set
+SUBFOLDER = os.environ.get('FLASK_SUBFOLDER')
+
+# Apply the reverse proxy wrapper for subfolder support
+app.wsgi_app = ReverseProxied(app.wsgi_app, script_name=SUBFOLDER)
 
 # set the secret key so we can cryptographically sign cookies and maintain sessions
 if os.path.isfile('secret_key.txt'):
@@ -492,3 +521,6 @@ def register_email():
                 edb[g.user] = email
 
     return redirect(url_for('profile'))
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', debug=True)

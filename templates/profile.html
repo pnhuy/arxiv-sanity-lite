@@ -50,7 +50,7 @@
             <b>TLDR: there are no passwords!</b>
         </div>
 
-        <form id="profile-login-form" action="/login" method="POST">
+        <form id="profile-login-form" action="{{ url_for('login') }}" method="POST">
             <div class="form-group">
               <label>Username:</label>
               <input class="form-control" type="text" name="username">

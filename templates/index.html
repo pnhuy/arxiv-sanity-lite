@@ -15,7 +15,7 @@ if anyone can think of a cleaner / shorter way please let me know.
 var move_page = function(int_offset) {
     var queryParams = new URLSearchParams(window.location.search);
     queryParams.set("page_number", Math.max(1, parseInt(gvars.page_number) + int_offset));
-    window.location.href = '/?' + queryParams.toString();
+    window.location.href = '{{ url_for("main") }}?' + queryParams.toString();
 }
 </script>
 {% endblock %}
@@ -31,7 +31,7 @@ var move_page = function(int_offset) {
 
         <!-- the choice box, allowing us to sort, rank, slice and dice papers -->
         <div id="cbox">
-            <form action="/" method="get">
+            <form action="{{ url_for('main') }}" method="get">
 
                 <!-- the search box, allowing us to search by keywords -->
                 <input name="q" type="text" id="qfield" value="{{ gvars.search_query }}">
@@ -75,10 +75,10 @@ var move_page = function(int_offset) {
         <!-- some hand-coded common choices for faster and more convenient operation -->
         <div id="cbox_fast">
             Shortcuts:
-            <a href="/?rank=tags&tags=all&time_filter=7&skip_have=yes">recommend over last week</a>
-            <a href="/?rank=tags&tags=all&time_filter=3&skip_have=yes">recommend over last 3 days</a>
-            <a href="/?rank=time">recent</a>
-            <a href="/?rank=random&time_filter=7">random last week</a>
+            <a href="{{ url_for('main', rank='tags', tags='all', time_filter='7', skip_have='yes') }}">recommend over last week</a>
+            <a href="{{ url_for('main', rank='tags', tags='all', time_filter='3', skip_have='yes') }}">recommend over last 3 days</a>
+            <a href="{{ url_for('main', rank='time') }}">recent</a>
+            <a href="{{ url_for('main', rank='random', time_filter='7') }}">random last week</a>
         </div>
     </div>
     <div>

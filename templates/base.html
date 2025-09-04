@@ -13,6 +13,7 @@
 
 <script>
 var user = {{ user | tojson }};
+var home_url = {{ url_for('main') }};
 </script>
 {% block variables %}
 {% endblock %}
@@ -21,12 +22,12 @@ var user = {{ user | tojson }};
 
 <body>
 <div id="header">
-    <a href="/" id="home-link">arxiv-sanity</a>
-    <a href="/profile" id="login-link">
+    <a href="{{  url_for('main') }}" id="home-link">arxiv-sanity</a>
+    <a href="{{  url_for('profile') }}" id="login-link">
         {{ 'profile' if user else 'login' }}
     </a>
-    <a href="/stats" id="stats-link">stats</a>
-    <a href="/about" id="stats-link">about</a>
+    <a href="{{  url_for('stats') }}" id="stats-link">stats</a>
+    <a href="{{  url_for('about') }}" id="about-link">about</a>
 </div>
 
 {% block content %}

@@ -21,6 +21,9 @@ COPY requirements.txt /app/
 # Install Python dependencies
 RUN pip install --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
+    
+# Add cron and make available
+RUN apt-get update && apt-get install -y cron make && rm -rf /var/lib/apt/lists/*
 
 # Copy project files
 COPY . /app/
@@ -31,11 +34,6 @@ EXPOSE 5000
 # Set environment variable for Flask
 ENV FLASK_APP=serve.py
 
-# Add cron and make available
-RUN apt-get update && apt-get install -y cron make && rm -rf /var/lib/apt/lists/*
-
-# Copy entrypoint script
-COPY docker-entrypoint.sh /app/docker-entrypoint.sh
 RUN chmod +x /app/docker-entrypoint.sh
 
 # Default command: run entrypoint script
